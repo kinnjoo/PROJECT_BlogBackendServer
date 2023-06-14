@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/kinnjoo/PROJECT_blog-backend-serveer#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongoose": "^7.2.4"
   }
 }
