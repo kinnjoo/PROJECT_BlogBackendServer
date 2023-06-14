@@ -6,12 +6,12 @@ const postSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  userId: {
+  user: {
     type: String,
     required: true,
     unique: true
   },
-  userPassword: {
+  password: {
     type: String,
     required: true
   },
@@ -23,10 +23,11 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  creatDate: {
-    type: String,
-    required: true
-  }
+  // new Date();
+  // creatDate: {
+  //   type: String,
+  //   required: true
+  // }
 });
 
 module.exports = mongoose.model("Posts", postSchema);

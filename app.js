@@ -9,11 +9,11 @@ connent();
 
 app.use(express.json());
 
+app.use("/api", [postsRouter]);
+
 app.get("/", (req, res) => {
   res.send("PROJECT_BlogBackendServer");
 });
-
-app.use("/api", [postsRouter]);
 
 app.listen(port, () => {
   console.log(port, "포트로 서버가 열렸어요!");
