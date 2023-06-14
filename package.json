@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kinnjoo/PROJECT_blog-backend-serveer.git"
+    "url": "git+https://github.com/kinnjoo/PROJECT_BlogBackendServer.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kinnjoo/PROJECT_blog-backend-serveer/issues"
+    "url": "https://github.com/kinnjoo/PROJECT_BlogBackendServer/issues"
   },
-  "homepage": "https://github.com/kinnjoo/PROJECT_blog-backend-serveer#readme",
+  "homepage": "https://github.com/kinnjoo/PROJECT_BlogBackendServer#readme",
   "dependencies": {
     "express": "^4.18.2",
     "mongoose": "^7.2.4"
