@@ -10,7 +10,7 @@ connent();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("PROJECT_blog-backend-server");
+  res.send("PROJECT_BlogBackendServer");
 });
 
 app.use("/api", [postsRouter]);
