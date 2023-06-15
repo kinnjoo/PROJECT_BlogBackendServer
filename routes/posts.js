@@ -12,43 +12,53 @@ router.get("/posts", async (req, res) => {
       postId: post.postId,
       user: post.user,
       title: post.title,
+      content: post.content
     }
   })
   res.status(200).json({ post: postList })
 })
 
 // 게시글 상세 조회 API
-// router.get("/posts/:postId", (req, res) => {
-//   const { postId } = req.params;
+// 패스워드 조회 안되게 수정
+router.get('/posts/:postId', async (req, res) => {
+  const { postId } = req.params;
+  const posts = await Posts.find({});
 
-//   // let result = null;
-//   // for (const post of posts) {
-//   //   if (Number(postId) === post.postId) {
-//   //     result = post;
-//   //   }
-//   // }
-//   // 위에 있는 for문과 같은 결과값 가져옴
-//   const [result] = posts.filter((post) => Number(postId) === post.postId)
+  const [postDetailList] = posts.filter((post) => postId === post.postId)
 
-//   res.status(200).json({ detail: result });
-// })
+  res.status(200).json({ detail: postDetailList });
+})
 
 // 게시글 작성 API
 router.post("/posts", async (req, res) => {
   const { postId, user, password, title, content } = req.body;
 
-  const posts = await Posts.find({ postId });
+  // 글 작성시 오류메세지 띄우기 { message: '데이터 형식이 올바르지 않습니다.' }
+  // const posts = await Posts.find({ postId });
 
-  if (posts.length) {
-    return res.status(400).json({
-      success: false,
-      errorMessage: "이미 존재하는 postId입니다."
-    });
-  }
+  // if (posts.length) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     errorMessage: "이미 존재하는 postId입니다."
+  //   });
+  // }
 
   const createdPosts = await Posts.create({ postId, user, password, title, content });
 
   res.json({ posts: createdPosts });
+})
+
+// 게시글 수정 API
+router.put("/posts/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const { password, title, content } = req.body;
+
+  const modifiedPost = await Posts.find({ postId });
+  if (modifiedPost.length) {
+    await Posts.updateOne({ password: password },
+      { $set: { title: title, content: content } })
+  }
+  res.status(200).json({ success: true });
 })
 
 module.exports = router;
