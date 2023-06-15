@@ -24,6 +24,7 @@ router.get('/posts/:postId', async (req, res) => {
   const { postId } = req.params;
   const posts = await Posts.find({});
 
+  // 원하는 요소만 안보이게 하는 기능이 있어요 - 데이터 필드 숨기기
   const [postDetailList] = posts.filter((post) => postId === post.postId)
 
   res.status(200).json({ detail: postDetailList });

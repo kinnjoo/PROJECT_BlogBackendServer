@@ -3,14 +3,14 @@ const app = express();
 const port = 3000;
 
 const postsRouter = require("./routes/posts.js");
-// const commentsRouter = require("./routes/comments.js");
+const commentsRouter = require("./routes/comments.js");
 
 const connent = require("./schemas");
 connent();
 
 app.use(express.json());
 
-app.use("/", [postsRouter]);
+app.use("/", [postsRouter, commentsRouter]);
 
 // app.get("/", (req, res) => {
 //   res.send("PROJECT_BlogBackendServer");
