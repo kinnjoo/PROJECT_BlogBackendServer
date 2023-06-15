@@ -9,7 +9,7 @@ router.get("/posts", async (req, res) => {
 
   const postList = posts.map((post) => {
     return {
-      postId: post.postId,
+      postId: post._id,
       user: post.user,
       title: post.title,
       content: post.content
@@ -19,60 +19,61 @@ router.get("/posts", async (req, res) => {
 })
 
 // 게시글 상세 조회 API
-// 패스워드 조회 안되게 수정
 router.get('/posts/:postId', async (req, res) => {
   const { postId } = req.params;
-  const posts = await Posts.find({});
-
-  // 원하는 요소만 안보이게 하는 기능이 있어요 - 데이터 필드 숨기기
-  const [postDetailList] = posts.filter((post) => postId === post.postId)
+  const postDetailList = await Posts.find({ "_id": postId });
 
   res.status(200).json({ detail: postDetailList });
 })
 
 // 게시글 작성 API
 router.post("/posts", async (req, res) => {
-  const { postId, user, password, title, content } = req.body;
+  const { user, password, title, content } = req.body;
+  const createdAt = new Date();
 
-  // 글 작성시 오류메세지 띄우기 { message: '데이터 형식이 올바르지 않습니다.' }
-  // const posts = await Posts.find({ postId });
-
-  // if (posts.length) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     errorMessage: "이미 존재하는 postId입니다."
-  //   });
-  // }
-
-  const createdPosts = await Posts.create({ postId, user, password, title, content });
-
-  res.json({ posts: createdPosts });
+  if (user && password && title && content) {
+    await Posts.create({ user, password, title, content, createdAt });
+    return res.status(200).json({ message: "게시글을 생성하였습니다." })
+  } else {
+    res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
+  }
 })
 
 // 게시글 수정 API
-// 수정 에러 메세지 추가
 router.put("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
-  const { password, title, content } = req.body;
+  const { user, password, title, content } = req.body;
+  const createdAt = new Date();
 
-  const modifiedPost = await Posts.find({ postId });
+  const modifiedPost = await Posts.find({ "_id": postId, "password": password });
   if (modifiedPost.length) {
-    await Posts.updateOne({ password: password },
-      { $set: { title: title, content: content } })
+    await Posts.updateOne({ user, password, title, content, createdAt })
+    return res.status(200).json({
+      message: "게시글을 수정하였습니다."
+    });
+  } else {
+    return res.status(400).json({
+      message: "데이터 형식이 올바르지 않습니다."
+    })
   }
-  res.status(200).json({ success: true });
 })
 
 // 게시글 삭제 API
-// 삭제 에러 메세지 추가
 router.delete("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
+  const { password } = req.body;
 
-  const deletePost = await Posts.find({ postId });
+  const deletePost = await Posts.find({ "_id": postId, "password": password });
   if (deletePost.length) {
-    await Posts.deleteOne({ postId });
+    await Posts.deleteOne({ "_id": postId });
+    return res.status(200).json({
+      message: "게시글을 삭제하였습니다."
+    });
+  } else {
+    return res.status(400).json({
+      message: "데이터 형식이 올바르지 않습니다."
+    })
   }
-  res.status(200).json({ success: true });
 })
 
 module.exports = router;
