@@ -6,13 +6,13 @@ const Posts = require("../schemas/post.js");
 
 // 댓글 목록 조회 API
 // 필요한 요소 : postId, commentId, user, content
-router.get("/comments/:postId", async (req, res) => {
+router.get("/posts/:postId/comments", async (req, res) => {
   const { postId } = req.params;
   const comments = await Comment.find({ postId });
 
   const commentList = comments.map((comment) => {
     return {
-      commentId: commentId,
+      commentId: comment.commentId,
       user: comment.user,
       content: comment.content
     }
@@ -22,8 +22,8 @@ router.get("/comments/:postId", async (req, res) => {
 
 
 // 댓글 작성 API
-router.post("/comments/:postId", async (req, res) => {
-  // const { postId } = req.params;
+router.post("/posts/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
   const { commentId, user, password, content } = req.body;
 
   // const comments = await Comment.find({ postId });
@@ -35,7 +35,7 @@ router.post("/comments/:postId", async (req, res) => {
   // }
   // Posts의 PostId를 통해 PostId가 일치하면 createdCommets, 불일치하면 에러 메세지
 
-  const createdComments = await Comment.create({ commentId, user, password, content });
+  const createdComments = await Comment.create({ commentId, user, password, content, postId });
 
   res.json({ comments: createdComments });
 })
