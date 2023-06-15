@@ -15,13 +15,13 @@ router.get("/posts", async (req, res) => {
       content: post.content
     }
   })
-  res.status(200).json({ post: postList })
+  res.status(200).json({ posts: postList })
 })
 
 // 게시글 상세 조회 API
 router.get('/posts/:postId', async (req, res) => {
   const { postId } = req.params;
-  const postDetailList = await Posts.find({ "_id": postId });
+  const postDetailList = await Posts.find({ _id: postId });
 
   res.status(200).json({ detail: postDetailList });
 })
@@ -45,7 +45,7 @@ router.put("/posts/:postId", async (req, res) => {
   const { user, password, title, content } = req.body;
   const createdAt = new Date();
 
-  const modifiedPost = await Posts.find({ "_id": postId, "password": password });
+  const modifiedPost = await Posts.find({ _id: postId, password });
   if (modifiedPost.length) {
     await Posts.updateOne({ user, password, title, content, createdAt })
     return res.status(200).json({
@@ -63,9 +63,9 @@ router.delete("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
   const { password } = req.body;
 
-  const deletePost = await Posts.find({ "_id": postId, "password": password });
+  const deletePost = await Posts.find({ _id: postId, password });
   if (deletePost.length) {
-    await Posts.deleteOne({ "_id": postId });
+    await Posts.deleteOne({ _id: postId });
     return res.status(200).json({
       message: "게시글을 삭제하였습니다."
     });

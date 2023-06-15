@@ -1,43 +1,65 @@
 const express = require("express");
 const router = express.Router();
 
-const Comment = require("../schemas/comment.js");
-const Posts = require("../schemas/post.js");
+const Comments = require("../schemas/comment.js");
 
 // 댓글 목록 조회 API
-// 필요한 요소 : postId, commentId, user, content
 router.get("/posts/:postId/comments", async (req, res) => {
   const { postId } = req.params;
-  const comments = await Comment.find({ postId });
+  const commentList = await Comments.find({ postId });
 
-  const commentList = comments.map((comment) => {
-    return {
-      commentId: comment.commentId,
-      user: comment.user,
-      content: comment.content
-    }
-  })
-  res.status(200).json({ comment: commentList })
-})
-
+  res.status(200).json({ comments: commentList });
+});
 
 // 댓글 작성 API
 router.post("/posts/:postId/comments", async (req, res) => {
   const { postId } = req.params;
-  const { commentId, user, password, content } = req.body;
+  const { user, password, content } = req.body;
+  const createdAt = new Date();
 
-  // const comments = await Comment.find({ postId });
-  // if (!comments.length) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     erroMessage: "입력값이 잘못 입력되었습니다."
-  //   });
-  // }
-  // Posts의 PostId를 통해 PostId가 일치하면 createdCommets, 불일치하면 에러 메세지
+  if (user && password && content) {
+    await Comments.create({ user, password, content, createdAt, postId });
+    return res.status(200).json({ message: "댓글을 생성하였습니다." })
+  } else {
+    res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
+  }
+})
 
-  const createdComments = await Comment.create({ commentId, user, password, content, postId });
+// 댓글 수정 API
+router.put("/posts/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  const { user, password, content } = req.body;
+  const createdAt = new Date();
 
-  res.json({ comments: createdComments });
+  const modifiedComment = await Comments.find({ user, password });
+  if (modifiedComment.length) {
+    await Comments.updateOne({ user, password, content, createdAt, postId })
+    return res.status(200).json({
+      message: "댓글을 수정하였습니다."
+    });
+  } else {
+    return res.status(400).json({
+      message: "데이터 형식이 올바르지 않습니다."
+    })
+  }
+})
+
+// 댓글 삭제 API
+router.delete("/posts/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  const { user, password } = req.body;
+
+  const deleteComment = await Comments.find({ user, password, postId });
+  if (deleteComment.length) {
+    await Comments.deleteOne({ user, password });
+    return res.status(200).json({
+      message: "댓글을 삭제하였습니다."
+    });
+  } else {
+    return res.status(400).json({
+      message: "데이터 형식이 올바르지 않습니다."
+    })
+  }
 })
 
 module.exports = router;
