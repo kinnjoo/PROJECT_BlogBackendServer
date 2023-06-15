@@ -49,6 +49,7 @@ router.post("/posts", async (req, res) => {
 })
 
 // 게시글 수정 API
+// 수정 에러 메세지 추가
 router.put("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
   const { password, title, content } = req.body;
@@ -57,6 +58,18 @@ router.put("/posts/:postId", async (req, res) => {
   if (modifiedPost.length) {
     await Posts.updateOne({ password: password },
       { $set: { title: title, content: content } })
+  }
+  res.status(200).json({ success: true });
+})
+
+// 게시글 삭제 API
+// 삭제 에러 메세지 추가
+router.delete("/posts/:postId", async (req, res) => {
+  const { postId } = req.params;
+
+  const deletePost = await Posts.find({ postId });
+  if (deletePost.length) {
+    await Posts.deleteOne({ postId });
   }
   res.status(200).json({ success: true });
 })
