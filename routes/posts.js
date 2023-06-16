@@ -4,6 +4,7 @@ const router = express.Router();
 const Posts = require("../schemas/post.js");
 
 // 게시글 목록 조회 API
+// 작성 날짜 기준으로 내림차순 정렬
 router.get("/posts", async (req, res) => {
   const posts = await Posts.find({});
 
@@ -40,6 +41,7 @@ router.post("/posts", async (req, res) => {
 })
 
 // 게시글 수정 API
+// 비밀번호 일치 확인
 router.put("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
   const { user, password, title, content } = req.body;
@@ -48,17 +50,14 @@ router.put("/posts/:postId", async (req, res) => {
   const modifiedPost = await Posts.find({ _id: postId, password });
   if (modifiedPost.length) {
     await Posts.updateOne({ user, password, title, content, createdAt })
-    return res.status(200).json({
-      message: "게시글을 수정하였습니다."
-    });
+    return res.status(200).json({ message: "게시글을 수정하였습니다." });
   } else {
-    return res.status(400).json({
-      message: "데이터 형식이 올바르지 않습니다."
-    })
+    return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
   }
 })
 
 // 게시글 삭제 API
+// 비밀번호 일치 확인
 router.delete("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
   const { password } = req.body;
@@ -66,13 +65,9 @@ router.delete("/posts/:postId", async (req, res) => {
   const deletePost = await Posts.find({ _id: postId, password });
   if (deletePost.length) {
     await Posts.deleteOne({ _id: postId });
-    return res.status(200).json({
-      message: "게시글을 삭제하였습니다."
-    });
+    return res.status(200).json({ message: "게시글을 삭제하였습니다." });
   } else {
-    return res.status(400).json({
-      message: "데이터 형식이 올바르지 않습니다."
-    })
+    return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
   }
 })
 
