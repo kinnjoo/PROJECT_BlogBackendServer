@@ -49,8 +49,6 @@ router.put("/comments/:commentId", async (req, res) => {
   const { commentId } = req.params;
   const { user, password, content } = req.body;
 
-  const modifiedComment = await Comments.find({ commentId, password });
-
   if (!content) {
     return res.status(400).json({ message: "댓글 내용을 입력해주세요." });
   } else if (!ObjectId.isValid(commentId) || !user || !password || !content) {
