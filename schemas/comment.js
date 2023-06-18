@@ -7,16 +7,14 @@ const commentSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    select: false
+    required: true
   },
   content: {
     type: String,
     required: true
   },
   createdAt: {
-    type: Date,
-    default: Date.now
+    type: Date
   },
   postId: {
     type: String
