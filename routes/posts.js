@@ -49,10 +49,9 @@ router.get('/posts/:postId', async (req, res) => {
 // 게시글 작성 API
 router.post("/posts", async (req, res) => {
   const { user, password, title, content } = req.body;
-  const createdAt = new Date();
 
   if (user && password && title && content) {
-    await Posts.create({ user, password, title, content, createdAt });
+    await Posts.create({ user, password, title, content });
     return res.status(200).json({ message: "게시글을 생성하였습니다." });
   } else {
     return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });

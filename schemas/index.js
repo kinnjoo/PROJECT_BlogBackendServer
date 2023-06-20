@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const connect = () => {
   mongoose
-    .connect("mongodb://localhost:27017/PROJECT_BlogBackendServer")
+    .connect("mongodb://localhost:27017/PROJECT_Blog_LV1")
     .catch(err => console.log(err));
 };
 
