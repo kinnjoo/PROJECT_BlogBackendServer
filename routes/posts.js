@@ -26,23 +26,20 @@ router.get('/posts/:postId', async (req, res) => {
 
   if (!ObjectId.isValid(postId)) {
     res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
-  } else {
-    const findPostId = await Posts.find({ _id: postId });
+  }
 
-    if (findPostId) {
-      const postDetailList = findPostId.map((post) => {
-        return {
-          postId: post._id,
-          user: post.user,
-          title: post.title,
-          content: post.content,
-          createdAt: post.createdAt
-        }
-      })
-      res.status(200).json({ detail: postDetailList });
-    } else {
-      res.status(400).json({ message: "게시글 조회에 실패하였습니다." });
-    }
+  const detail = await Posts.findOne({ _id: postId });
+
+  if (detail) {
+    res.send({
+      postId: detail._id,
+      user: detail.user,
+      title: detail.title,
+      content: detail.content,
+      createdAt: detail.createdAt
+    })
+  } else {
+    res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
   }
 })
 
@@ -65,19 +62,17 @@ router.put("/posts/:postId", async (req, res) => {
 
   if (!ObjectId.isValid(postId) || !user || !password || !title || !content) {
     return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
-  } else {
-    const findPostId = await Posts.findOne({ _id: postId });
+  }
 
-    if (!findPostId) {
-      return res.status(400).json({ message: "게시글 조회에 실패하였습니다." })
-    } else {
-      if (findPostId.password === password) {
-        await Posts.updateOne({ user, password, title, content });
-        return res.status(200).json({ message: "게시글을 수정하였습니다." });
-      } else {
-        return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
-      }
-    }
+  const findPostId = await Posts.findOne({ _id: postId });
+
+  if (!findPostId) {
+    return res.status(404).json({ message: "게시글 조회에 실패하였습니다." })
+  } else if (findPostId.password === password) {
+    await Posts.updateOne({ user, password, title, content });
+    return res.status(200).json({ message: "게시글을 수정하였습니다." });
+  } else {
+    return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
   }
 })
 
@@ -88,19 +83,16 @@ router.delete("/posts/:postId", async (req, res) => {
 
   if (!ObjectId.isValid(postId) || !password) {
     res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
-  } else {
-    const findPostId = await Posts.findOne({ _id: postId });
+  }
+  const findPostId = await Posts.findOne({ _id: postId });
 
-    if (!findPostId) {
-      return res.status(400).json({ message: "게시글 조회에 실패하였습니다." });
-    } else {
-      if (findPostId.password === password) {
-        await Posts.deleteOne({ _id: postId });
-        return res.status(200).json({ message: "게시글을 삭제하였습니다." });
-      } else {
-        return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
-      }
-    }
+  if (!findPostId) {
+    return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
+  } else if (findPostId.password === password) {
+    await Posts.deleteOne({ _id: postId });
+    return res.status(200).json({ message: "게시글을 삭제하였습니다." });
+  } else {
+    return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
   }
 })
 
